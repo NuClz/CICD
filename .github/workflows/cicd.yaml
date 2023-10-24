@@ -31,3 +31,11 @@ jobs:
         env:
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
           SLACK_MESSAGE: 'IT IS FAIL'
+
+      - name: upload report
+        if: always() && (steps.scan.outcome == 'failure')
+        uses: adrey/slack-file-upload-action@master
+        with:
+          token: ${{ secrets.SLACK_TOKEN }}
+          path: test.txt
+          channel: ${{ secrets.SLACK_CHANNEL }}
