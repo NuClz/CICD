@@ -32,6 +32,7 @@ jobs:
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
           SLACK_MESSAGE: 'IT IS FAIL'
 
+
       - name: upload report
         if: always() && (steps.scan.outcome == 'failure')
         uses: adrey/slack-file-upload-action@master
