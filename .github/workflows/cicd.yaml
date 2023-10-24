@@ -16,18 +16,18 @@ jobs:
    uses: actions/checkout@v2
 
  - name: Run Trivy vulnerability scanner
-        id: scan
-        uses: aquasecurity/trivy-action@master
-        with:
-          image-ref: 'docker.io/my-organization/my-app:${{ github.sha }}'
-          scan-type: 'fs'
-          scan-ref: '.'
-          format: 'table'
-          exit-code: '1'
-          ignore-unfixed: true
-          vuln-type: 'os,library'
-          severity: 'HIGH'
-          output: 'trivy-output.txt'
+   id: scan
+   uses: aquasecurity/trivy-action@master
+   with:
+    image-ref: 'docker.io/my-organization/my-app:${{ github.sha }}'
+    scan-type: 'fs'
+    scan-ref: '.'
+    format: 'table'
+    exit-code: '1'
+    ignore-unfixed: true
+    vuln-type: 'os,library'
+    severity: 'HIGH'
+    output: 'trivy-output.txt'
 
   - name: sendFail
     
