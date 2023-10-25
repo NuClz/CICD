@@ -6,6 +6,11 @@ jobs:
     name: test
     runs-on: ubuntu-latest
 
+    permissions:
+      contents: read
+      packages: write
+      id-token: write
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -55,7 +60,27 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       -
         name: Build and push
+        id: build-and-push
         uses: docker/build-push-action@v5
         with:
           push: true
           tags: zhoumix/cicd:test
+
+      - name: Install Cosign
+        uses: sigstore/cosign-installer@v3.1.1
+        with:
+          cosign-release: 'v2.1.1'
+      - name: Check install!
+        run: cosign version
+
+      - name: Sign the images with GitHub OIDC Token
+        env:
+          DIGEST: ${{ steps.build-and-push.outputs.digest }}
+          TAGS: zhoumix/cicd:test
+        run: cosign sign --yes "${TAGS}@${DIGEST}"
+
+      - name: sendSuccess
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+          SLACK_MESSAGE: 'IT IS SUCCESS'
